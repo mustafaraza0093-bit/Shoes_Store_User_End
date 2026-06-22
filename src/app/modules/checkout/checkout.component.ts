@@ -26,6 +26,10 @@ export class CheckoutComponent implements OnInit {
     { id: 'office', label: 'Office', street: '23 MM Alam Road, Lahore', province: 'Punjab, 54660', phone: '0321-9876543' },
   ];
 
+  promoInput = '';
+  promoMessage = '';
+  promoError = false;
+
   constructor(private cartService: CartService) {}
 
   ngOnInit() {
@@ -43,6 +47,16 @@ export class CheckoutComponent implements OnInit {
 
   nextStep() { if (this.step < 3) this.step++; }
   prevStep() { if (this.step > 1) this.step--; }
+
+  applyPromo() {
+    if (!this.promoInput) return;
+    const res = this.cartService.applyCoupon(this.promoInput);
+    this.promoMessage = res.message;
+    this.promoError = !res.success;
+    if (res.success) {
+      this.promoInput = '';
+    }
+  }
 
   placeOrder() {
     this.step = 3;

@@ -83,6 +83,8 @@
 
         <!-- CTA -->
         <button class="btn-primary btn-full add-btn"
+          [class.is-adding]="isAdding"
+          [class.success]="btnText.includes('Added')"
           [disabled]="!selectedSize || isAdding"
           (click)="addToCart()">
           {{ btnText }}

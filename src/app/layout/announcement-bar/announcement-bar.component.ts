@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -20,10 +20,15 @@ import { CommonModule } from '@angular/common';
       align-items: center;
       justify-content: center;
       gap: 12px;
-      position: relative;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1001;
       font-family: var(--font-body);
       font-size: 13px;
       font-weight: 500;
+      height: 40px;
     }
     .dismiss {
       position: absolute;
@@ -48,5 +53,10 @@ import { CommonModule } from '@angular/common';
 })
 export class AnnouncementBarComponent {
   isVisible = true;
-  dismiss() { this.isVisible = false; }
+  @Output() dismissed = new EventEmitter<void>();
+
+  dismiss() {
+    this.isVisible = false;
+    this.dismissed.emit();
+  }
 }

@@ -1,4 +1,4 @@
-<nav class="navbar" [class.scrolled]="isScrolled">
+<nav class="navbar" [class.scrolled]="isScrolled" [style.top.px]="announcementVisible ? 40 : 0">
   <div class="nav-container">
 
     <!-- Logo -->
@@ -51,7 +51,7 @@
             </div>
             <div class="dropdown-divider"></div>
             <a routerLink="/account" class="dropdown-item">My Orders</a>
-            <a routerLink="/account/profile" class="dropdown-item">My Profile</a>
+            <a routerLink="/account" class="dropdown-item">My Profile</a>
             <button class="dropdown-item logout" (click)="logout()">Logout</button>
           </ng-container>
           <ng-template #guestMenu>
@@ -71,7 +71,7 @@
   <!-- Search Bar -->
   <div class="search-bar" *ngIf="isSearchOpen">
     <div class="search-inner container">
-      <input type="text" placeholder="Search for shoes, brands, or styles..." 
+      <input type="text" placeholder="Search for shoes, brands, or styles..."
              [value]="searchQuery"
              (input)="onSearch($any($event.target).value)"
              (keyup.escape)="toggleSearch()"
@@ -79,13 +79,25 @@
       <button class="icon-btn search-close" (click)="toggleSearch()">×</button>
     </div>
     <!-- Search Results -->
-    <div class="search-results container" *ngIf="searchResults.length > 0">
-      <div class="results-section-label">PRODUCTS</div>
-      <div *ngFor="let product of searchResults" class="search-result-item" (click)="goToProduct(product.id)">
-        <img [src]="product.images[0]" alt="{{ product.name }}" />
-        <div class="result-info">
-          <span class="result-name">{{ product.name }}</span>
-          <span class="result-meta">{{ product.brand }} — PKR {{ product.price | number }}</span>
+    <div class="search-results container" *ngIf="searchResults.length > 0 || brandSearchResults.length > 0">
+      <div *ngIf="searchResults.length > 0">
+        <div class="results-section-label">PRODUCTS</div>
+        <div *ngFor="let product of searchResults" class="search-result-item" (click)="goToProduct(product.id)">
+          <img [src]="product.images[0]" alt="{{ product.name }}" />
+          <div class="result-info">
+            <span class="result-name">{{ product.name }}</span>
+            <span class="result-meta">{{ product.brand }} — PKR {{ product.price | number }}</span>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="brandSearchResults.length > 0">
+        <div class="results-section-label" style="margin-top: 12px">BRANDS</div>
+        <div *ngFor="let brand of brandSearchResults" class="search-result-item" (click)="navigateToBrand(brand.id)">
+          <div class="brand-icon-circle">{{ brand.name.charAt(0) }}</div>
+          <div class="result-info">
+            <span class="result-name">{{ brand.name }}</span>
+            <span class="result-meta">{{ brand.count }} products</span>
+          </div>
         </div>
       </div>
       <div class="see-all-link">See all results for "{{ searchQuery }}" →</div>
@@ -114,7 +126,13 @@
       </div>
     </div>
     <div class="mobile-divider"></div>
-    <a routerLink="/auth/login" class="mobile-link" (click)="navigateTo('/auth/login')">Login</a>
-    <a routerLink="/auth/register" class="mobile-link" (click)="navigateTo('/auth/register')">Register</a>
+    <ng-container *ngIf="currentUser; else mobileGuest">
+      <a routerLink="/account" class="mobile-link" (click)="navigateTo('/account')">My Account</a>
+      <button class="mobile-link" (click)="logout()">Logout</button>
+    </ng-container>
+    <ng-template #mobileGuest>
+      <a routerLink="/auth/login" class="mobile-link" (click)="navigateTo('/auth/login')">Login</a>
+      <a routerLink="/auth/register" class="mobile-link" (click)="navigateTo('/auth/register')">Register</a>
+    </ng-template>
   </div>
 </div>

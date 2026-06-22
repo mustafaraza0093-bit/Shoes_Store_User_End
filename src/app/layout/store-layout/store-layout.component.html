@@ -1,6 +1,6 @@
-<app-announcement-bar></app-announcement-bar>
-<app-navbar></app-navbar>
-<main class="main-content">
+<app-announcement-bar (dismissed)="onAnnouncementDismiss()"></app-announcement-bar>
+<app-navbar [announcementVisible]="announcementVisible"></app-navbar>
+<main class="main-content" [class.with-announcement]="announcementVisible">
   <router-outlet></router-outlet>
 </main>
 <app-footer></app-footer>

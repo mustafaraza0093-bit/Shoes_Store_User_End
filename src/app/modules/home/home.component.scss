@@ -207,27 +207,49 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
-  background: rgba(255,255,255,0.08);
-  border-radius: 8px;
-  padding: 12px 16px;
+  gap: 8px;
+}
+
+.digit-card {
+  position: relative;
+  background: #111;
+  border-radius: 6px;
+  padding: 16px 20px;
   min-width: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.5), 0 4px 8px rgba(0,0,0,0.4);
+  perspective: 400px;
+
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: 2px;
+    background: #000;
+    z-index: 2;
+    transform: translateY(-50%);
+  }
 
   .digit {
     font-family: var(--font-data);
-    font-size: 28px;
+    font-size: 32px;
     font-weight: 700;
     color: var(--accent);
     line-height: 1;
+    z-index: 1;
   }
+}
 
-  .digit-label {
-    font-size: 9px;
-    font-weight: 700;
-    color: rgba(255,255,255,0.4);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-  }
+.digit-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.5);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
 }
 
 .digit-separator {

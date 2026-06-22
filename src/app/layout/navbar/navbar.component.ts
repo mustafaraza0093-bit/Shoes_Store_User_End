@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener } from '@angular/core';
+import { Component, OnInit, HostListener, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { CartService } from '../../core/services/cart.service';
@@ -14,6 +14,8 @@ import { Product } from '../../core/models/product.model';
   styleUrl: './navbar.component.scss'
 })
 export class NavbarComponent implements OnInit {
+  @Input() announcementVisible = true;
+
   cartCount = 0;
   isScrolled = false;
   isMobileMenuOpen = false;
@@ -22,6 +24,7 @@ export class NavbarComponent implements OnInit {
   isAccountMenuOpen = false;
   searchQuery = '';
   searchResults: Product[] = [];
+  brandSearchResults: { name: string; id: string; count: number }[] = [];
   currentUser: User | null = null;
   allProducts: Product[] = [];
 
@@ -61,6 +64,10 @@ export class NavbarComponent implements OnInit {
     });
     this.dataService.getProducts().subscribe(products => {
       this.allProducts = products;
+      // Update brand counts from actual data
+      this.brands.forEach(b => {
+        b.count = products.filter(p => p.brand.toLowerCase().replace(' ', '-') === b.id).length;
+      });
     });
   }
 
@@ -74,18 +81,24 @@ export class NavbarComponent implements OnInit {
     if (!this.isSearchOpen) {
       this.searchQuery = '';
       this.searchResults = [];
+      this.brandSearchResults = [];
     }
   }
 
   onSearch(query: string) {
     this.searchQuery = query;
     if (query.length > 1) {
+      const q = query.toLowerCase();
       this.searchResults = this.allProducts.filter(p =>
-        p.name.toLowerCase().includes(query.toLowerCase()) ||
-        p.brand.toLowerCase().includes(query.toLowerCase())
+        p.name.toLowerCase().includes(q) ||
+        p.brand.toLowerCase().includes(q)
       ).slice(0, 5);
+      this.brandSearchResults = this.brands.filter(b =>
+        b.name.toLowerCase().includes(q)
+      );
     } else {
       this.searchResults = [];
+      this.brandSearchResults = [];
     }
   }
 
@@ -126,6 +139,7 @@ export class NavbarComponent implements OnInit {
     this.isSearchOpen = false;
     this.searchQuery = '';
     this.searchResults = [];
+    this.brandSearchResults = [];
     this.router.navigate(['/product', productId]);
   }
 }

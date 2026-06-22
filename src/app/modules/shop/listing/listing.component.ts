@@ -33,7 +33,7 @@ export class ListingComponent implements OnInit {
 
   brands = ['Nike', 'Adidas', 'Converse', 'Vans', 'Reebok', 'New Balance', 'Puma', 'Yeezy', 'Skechers', 'Bata'];
   conditions = ['NEW', 'PRE-OWNED'];
-  sizes = ['UK 4', 'UK 5', 'UK 6', 'UK 7', 'UK 8', 'UK 9', 'UK 10', 'UK 11', 'UK 12'];
+  sizes: string[] = [];
   
   pageTitle = 'All Footwear';
   showFilters = false;
@@ -43,6 +43,11 @@ export class ListingComponent implements OnInit {
   ngOnInit() {
     this.dataService.getProducts().subscribe(products => {
       this.allProducts = products;
+      
+      const sizeSet = new Set<string>();
+      products.forEach(p => p.sizes.forEach(s => sizeSet.add(s)));
+      this.sizes = Array.from(sizeSet).sort();
+
       this.route.params.subscribe(params => {
         this.category = params['category'] || null;
         if (this.category) {

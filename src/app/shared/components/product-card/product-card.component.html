@@ -53,6 +53,8 @@
     <!-- Add to Cart Button -->
     <button 
       class="btn-primary btn-full add-to-cart-btn" 
+      [class.is-adding]="isAdding"
+      [class.success]="btnText === '✓ Added'"
       [disabled]="!selectedSize || isAdding"
       (click)="addToCart($event)">
       <span class="btn-text">{{ btnText }}</span>

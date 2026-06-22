@@ -1,4 +1,9 @@
 .main-content {
-  padding-top: 64px; // Offset for fixed navbar
+  padding-top: 64px; // Offset for fixed navbar only
   min-height: calc(100vh - 64px);
+  transition: padding-top 0.3s ease;
+
+  &.with-announcement {
+    padding-top: 104px; // navbar (64px) + announcement bar (~40px)
+  }
 }

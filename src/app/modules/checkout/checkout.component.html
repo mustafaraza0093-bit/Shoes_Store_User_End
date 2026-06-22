@@ -94,6 +94,15 @@
             <div class="summary-divider"></div>
             <div class="summary-row total"><span>Total</span><span class="price">PKR {{ grandTotal | number }}</span></div>
           </div>
+          
+          <div class="promo-section">
+            <h3 class="summary-label">PROMO CODE</h3>
+            <div class="promo-input-group">
+              <input type="text" [(ngModel)]="promoInput" placeholder="Enter code (e.g. SUMMER15)" class="promo-input" />
+              <button class="btn-primary apply-btn" (click)="applyPromo()" [disabled]="!promoInput">Apply</button>
+            </div>
+            <p class="promo-msg" [class.error]="promoError" *ngIf="promoMessage">{{ promoMessage }}</p>
+          </div>
         </div>
       </div>
     </ng-container>

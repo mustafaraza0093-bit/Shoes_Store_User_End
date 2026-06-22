@@ -44,17 +44,17 @@
         <span class="countdown-label">Ends In:</span>
         <div class="countdown-digits">
           <div class="digit-block">
-            <span class="digit">{{ pad(countdownHours) }}</span>
+            <div class="digit-card"><span class="digit">{{ pad(countdownHours) }}</span></div>
             <span class="digit-label">HRS</span>
           </div>
           <span class="digit-separator">:</span>
           <div class="digit-block">
-            <span class="digit">{{ pad(countdownMinutes) }}</span>
+            <div class="digit-card"><span class="digit">{{ pad(countdownMinutes) }}</span></div>
             <span class="digit-label">MIN</span>
           </div>
           <span class="digit-separator">:</span>
           <div class="digit-block">
-            <span class="digit">{{ pad(countdownSeconds) }}</span>
+            <div class="digit-card"><span class="digit">{{ pad(countdownSeconds) }}</span></div>
             <span class="digit-label">SEC</span>
           </div>
         </div>

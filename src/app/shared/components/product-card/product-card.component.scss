@@ -61,8 +61,8 @@
 
 .sale-badge {
   position: absolute;
-  top: 12px;
-  right: 12px;
+  bottom: 12px;
+  left: 12px;
   background-color: var(--danger);
   color: #ffffff;
   font-family: var(--font-body);
@@ -187,6 +187,7 @@
   position: relative;
   overflow: hidden;
   z-index: 1;
+  transition: background-color 0.3s ease, color 0.3s ease;
 
   &::before {
     content: '';
@@ -195,12 +196,21 @@
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    transition: 0.5s;
+    background: linear-gradient(90deg, transparent, rgba(201, 168, 76, 0.4), transparent);
     z-index: -1;
   }
 
-  &:active::before {
-    left: 100%;
+  &.is-adding::before {
+    animation: goldSweep 1s ease-in-out;
   }
+
+  &.success {
+    background-color: var(--accent);
+    color: var(--ink);
+  }
+}
+
+@keyframes goldSweep {
+  0% { left: -100%; }
+  100% { left: 100%; }
 }
