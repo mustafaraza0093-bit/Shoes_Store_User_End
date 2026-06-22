@@ -1,24 +1,34 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { NavbarComponent } from '../../shared/components/navbar/navbar.component';
+import { CommonModule } from '@angular/common';
+import { NavbarComponent } from '../navbar/navbar.component';
+import { FooterComponent } from '../footer/footer.component';
+import { AnnouncementBarComponent } from '../announcement-bar/announcement-bar.component';
+import { CartDrawerComponent } from '../cart-drawer/cart-drawer.component';
+import { CartService } from '../../core/services/cart.service';
+import { DataService } from '../../core/services/data.service';
 
 @Component({
   selector: 'app-store-layout',
   standalone: true,
-  imports: [RouterOutlet, NavbarComponent],
-  template: `
-    <div class="store-container">
-      <app-navbar></app-navbar>
-      <main class="main-content">
-        <router-outlet></router-outlet>
-      </main>
-      <footer class="footer">
-        <div class="container">
-          <p>&copy; 2026 Sole & Story. All rights reserved.</p>
-        </div>
-      </footer>
-    </div>
-  `,
+  imports: [
+    CommonModule,
+    RouterOutlet,
+    NavbarComponent,
+    FooterComponent,
+    AnnouncementBarComponent,
+    CartDrawerComponent,
+  ],
+  templateUrl: './store-layout.component.html',
   styleUrl: './store-layout.component.scss'
 })
-export class StoreLayoutComponent {}
+export class StoreLayoutComponent implements OnInit {
+  constructor(private cartService: CartService, private dataService: DataService) {}
+
+  ngOnInit() {
+    // Pre-populate cart with demo items
+    this.dataService.getProducts().subscribe(products => {
+      this.cartService.prePopulate(products);
+    });
+  }
+}

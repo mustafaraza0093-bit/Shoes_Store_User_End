@@ -1,0 +1,183 @@
+<div class="detail-page" *ngIf="product">
+  <div class="container">
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb">
+      <a routerLink="/">Home</a> ›
+      <a [routerLink]="'/shop/' + product.category.toLowerCase()">{{ product.category }}</a> ›
+      <a [routerLink]="'/shop'" [queryParams]="{brand: product.brand.toLowerCase()}">{{ product.brand }}</a> ›
+      <span>{{ product.name }}</span>
+    </nav>
+
+    <!-- Main 2-col layout -->
+    <div class="detail-main">
+      <!-- Left: Gallery -->
+      <div class="gallery">
+        <div class="main-image-wrapper">
+          <app-condition-ribbon [condition]="product.condition"></app-condition-ribbon>
+          <img [src]="product.images[selectedImageIndex]" [alt]="product.name" class="main-image" />
+        </div>
+        <div class="thumbnails">
+          <button *ngFor="let img of product.images; let i = index"
+            class="thumb-btn" [class.active]="selectedImageIndex === i"
+            (click)="selectImage(i)">
+            <img [src]="img" [alt]="product.name + ' view ' + (i+1)" />
+          </button>
+        </div>
+      </div>
+
+      <!-- Right: Info -->
+      <div class="product-info">
+        <span class="product-brand-label">{{ product.brand }}</span>
+        <h1 class="product-title">{{ product.name }}</h1>
+
+        <!-- Rating -->
+        <div class="rating-row">
+          <div class="stars">
+            <span *ngFor="let s of getStars(4.2)" class="star" [class.filled]="s <= 4">★</span>
+          </div>
+          <span class="rating-count">(4.2) · {{ product.reviews.length }} reviews</span>
+        </div>
+
+        <hr class="divider" />
+
+        <!-- Price -->
+        <div class="price-block">
+          <ng-container *ngIf="product.originalPrice; else normalPrice">
+            <span class="price-sale">PKR {{ product.price | number }}</span>
+            <span class="price-strike">PKR {{ product.originalPrice | number }}</span>
+          </ng-container>
+          <ng-template #normalPrice>
+            <span class="price">PKR {{ product.price | number }}</span>
+          </ng-template>
+        </div>
+
+        <div class="meta-row">
+          <span class="meta-label">Condition:</span>
+          <span class="condition-badge" [class.new]="product.condition === 'NEW'" [class.used]="product.condition === 'PRE-OWNED'">
+            {{ product.condition }}
+          </span>
+        </div>
+        <div class="meta-row">
+          <span class="meta-label">SKU:</span>
+          <span class="sku">{{ product.brand.substring(0,2).toUpperCase() }}-{{ product.id.toUpperCase() }}</span>
+        </div>
+
+        <hr class="divider" />
+
+        <!-- Size Selector -->
+        <div class="size-section">
+          <h3 class="size-heading">Select Size</h3>
+          <div class="size-chips">
+            <button *ngFor="let size of product.sizes"
+              class="size-chip"
+              [class.active]="selectedSize === size"
+              [class.out-of-stock]="!isSizeInStock(size)"
+              [disabled]="!isSizeInStock(size)"
+              (click)="selectSize(size)"
+              [title]="!isSizeInStock(size) ? 'Out of stock in ' + size : ''">
+              {{ size }}
+            </button>
+          </div>
+          <p class="stock-warning" *ngIf="selectedSize">Only 4 left in {{ selectedSize }}!</p>
+        </div>
+
+        <!-- CTA -->
+        <button class="btn-primary btn-full add-btn"
+          [disabled]="!selectedSize || isAdding"
+          (click)="addToCart()">
+          {{ btnText }}
+        </button>
+
+        <!-- Trust Badges -->
+        <div class="trust-badges">
+          <div class="trust-badge">🚚 Free delivery on orders PKR 2,000+</div>
+          <div class="trust-badge">🔄 7-day easy returns</div>
+          <div class="trust-badge">✅ Authenticity guaranteed</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs-section">
+      <div class="tab-nav">
+        <button class="tab-btn" [class.active]="activeTab === 'description'" (click)="activeTab = 'description'">Description</button>
+        <button class="tab-btn" [class.active]="activeTab === 'size-guide'" (click)="activeTab = 'size-guide'">Size Guide</button>
+        <button class="tab-btn" *ngIf="product.conditionReport" [class.active]="activeTab === 'condition'" (click)="activeTab = 'condition'">Condition Report</button>
+        <button class="tab-btn" [class.active]="activeTab === 'reviews'" (click)="activeTab = 'reviews'">Reviews ({{ product.reviews.length }})</button>
+      </div>
+
+      <!-- Description Tab -->
+      <div class="tab-content" *ngIf="activeTab === 'description'">
+        <h3>About this shoe</h3>
+        <p>{{ product.description }}</p>
+        <ul>
+          <li>Full-grain leather upper for durability and easy cleaning</li>
+          <li>Air unit in the heel for lightweight cushioning</li>
+          <li>Rubber cupsole with pivot circle for traction</li>
+          <li>Padded collar for all-day comfort</li>
+        </ul>
+      </div>
+
+      <!-- Size Guide Tab -->
+      <div class="tab-content" *ngIf="activeTab === 'size-guide'">
+        <h3>UK Size Guide</h3>
+        <table class="size-table">
+          <thead><tr><th>UK</th><th>US</th><th>EU</th><th>CM</th></tr></thead>
+          <tbody>
+            <tr><td>6</td><td>7</td><td>39</td><td>25</td></tr>
+            <tr><td>7</td><td>8</td><td>40</td><td>26</td></tr>
+            <tr><td>8</td><td>9</td><td>41</td><td>26.5</td></tr>
+            <tr><td>9</td><td>10</td><td>42.5</td><td>27.5</td></tr>
+            <tr><td>10</td><td>11</td><td>44</td><td>28</td></tr>
+            <tr><td>11</td><td>12</td><td>45</td><td>29</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Condition Report Tab -->
+      <div class="tab-content" *ngIf="activeTab === 'condition' && product.conditionReport">
+        <h3>Condition Report — {{ product.conditionReport.grade }}</h3>
+        <p class="inspected-date">Inspected: {{ product.conditionReport.inspectedDate }}</p>
+        <div class="condition-bars">
+          <div class="cond-row"><span class="cond-label">Sole</span><div class="cond-bar"><div class="cond-fill" [style.width]="getConditionBar(product.conditionReport.sole)"></div></div><span>{{ product.conditionReport.sole }}/10</span></div>
+          <div class="cond-row"><span class="cond-label">Upper</span><div class="cond-bar"><div class="cond-fill" [style.width]="getConditionBar(product.conditionReport.upper)"></div></div><span>{{ product.conditionReport.upper }}/10</span></div>
+          <div class="cond-row"><span class="cond-label">Insole</span><div class="cond-bar"><div class="cond-fill" [style.width]="getConditionBar(product.conditionReport.insole)"></div></div><span>{{ product.conditionReport.insole }}/10</span></div>
+          <div class="cond-row"><span class="cond-label">Laces</span><div class="cond-bar"><div class="cond-fill" [style.width]="getConditionBar(product.conditionReport.laces)"></div></div><span>{{ product.conditionReport.laces }}/10</span></div>
+          <div class="cond-row"><span class="cond-label">Stitching</span><div class="cond-bar"><div class="cond-fill" [style.width]="getConditionBar(product.conditionReport.stitching)"></div></div><span>{{ product.conditionReport.stitching }}/10</span></div>
+        </div>
+        <p class="cond-notes">Notes: {{ product.conditionReport.notes }}</p>
+        <p class="cond-notes">Original box: {{ product.conditionReport.originalBox ? 'Included ✓' : 'Not included' }}</p>
+      </div>
+
+      <!-- Reviews Tab -->
+      <div class="tab-content" *ngIf="activeTab === 'reviews'">
+        <h3>Customer Reviews</h3>
+        <div class="reviews-list">
+          <div class="review-card" *ngFor="let review of product.reviews">
+            <div class="review-header">
+              <div class="review-stars">
+                <span *ngFor="let s of getStars(review.rating)" class="star" [class.filled]="s <= review.rating">★</span>
+              </div>
+              <span class="review-author">{{ review.author }}</span>
+              <span class="review-date">{{ review.date }}</span>
+            </div>
+            <p class="review-text">{{ review.text }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Related Products -->
+    <div class="related-section" *ngIf="relatedProducts.length > 0">
+      <h2 class="related-title">You Might Also Like</h2>
+      <div class="related-grid">
+        <app-product-card *ngFor="let p of relatedProducts" [product]="p"></app-product-card>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="not-found" *ngIf="!product">
+  <h2>Product not found</h2>
+  <a routerLink="/shop" class="btn-primary">Back to Shop</a>
+</div>

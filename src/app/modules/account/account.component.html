@@ -1,0 +1,70 @@
+<div class="account-page">
+  <div class="container">
+    <div class="account-layout">
+      <!-- Sidebar -->
+      <aside class="account-sidebar">
+        <div class="user-info" *ngIf="user">
+          <div class="user-avatar">{{ user.name.charAt(0) }}</div>
+          <div class="user-details">
+            <span class="user-name">{{ user.name }}</span>
+            <span class="user-email">{{ user.email }}</span>
+          </div>
+        </div>
+        <nav class="account-nav">
+          <button class="nav-item" [class.active]="activeTab === 'orders'" (click)="activeTab = 'orders'">My Orders</button>
+          <button class="nav-item" [class.active]="activeTab === 'profile'" (click)="activeTab = 'profile'">My Profile</button>
+          <button class="nav-item" [class.active]="activeTab === 'addresses'" (click)="activeTab = 'addresses'">Saved Addresses</button>
+          <button class="nav-item logout" (click)="logout()">Logout</button>
+        </nav>
+      </aside>
+
+      <!-- Content -->
+      <div class="account-content">
+        <!-- My Orders -->
+        <div *ngIf="activeTab === 'orders'">
+          <h2 class="content-title">My Orders</h2>
+          <div class="orders-list">
+            <div class="order-row" *ngFor="let order of orders">
+              <div class="order-main" (click)="toggleOrderDetails(order.id)">
+                <div class="order-id">{{ order.id }}</div>
+                <div class="order-date">{{ order.date }}</div>
+                <div class="order-items">{{ order.itemsCount }} item{{ order.itemsCount > 1 ? 's' : '' }}</div>
+                <div class="order-total price">PKR {{ order.total | number }}</div>
+                <div class="order-status">{{ order.status }}</div>
+                <button class="view-details-btn">View Details {{ expandedOrder === order.id ? '▲' : '▼' }}</button>
+              </div>
+              <!-- Expanded Details (mock) -->
+              <div class="order-details" *ngIf="expandedOrder === order.id">
+                <div class="detail-item">Air Force 1 '07 — UK 9 — PKR 12,500</div>
+                <div class="detail-item">Stan Smith — UK 8 — PKR 9,800</div>
+                <div class="detail-item">Old Skool Black — UK 9 — PKR 4,500</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Profile -->
+        <div *ngIf="activeTab === 'profile'">
+          <h2 class="content-title">My Profile</h2>
+          <div class="profile-form" *ngIf="user">
+            <div class="field-group"><label>Full Name</label><input type="text" [value]="user.name" /></div>
+            <div class="field-group"><label>Email</label><input type="email" [value]="user.email" /></div>
+            <div class="field-group"><label>Phone</label><input type="text" value="0321-4567890" /></div>
+            <button class="btn-primary save-btn">Save Changes</button>
+          </div>
+        </div>
+
+        <!-- Addresses -->
+        <div *ngIf="activeTab === 'addresses'">
+          <h2 class="content-title">Saved Addresses</h2>
+          <div class="address-card">
+            <div class="addr-badge">Default</div>
+            <p><strong>Home</strong></p>
+            <p>14-B, Gulberg III, Lahore, Punjab 54000</p>
+            <p>0321-4567890</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

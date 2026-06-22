@@ -1,1 +1,55 @@
-<p>cart-drawer works!</p>
+<div class="drawer-overlay" *ngIf="isOpen" (click)="close()"></div>
+
+<div class="cart-drawer" [class.open]="isOpen">
+  <!-- Header -->
+  <div class="drawer-header">
+    <h2 class="drawer-title">Your Cart <span class="item-count">({{ items.length }} items)</span></h2>
+    <button class="close-btn" (click)="close()">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-cart" *ngIf="items.length === 0">
+    <div class="empty-icon">🛒</div>
+    <p>Your cart is empty</p>
+    <button class="btn-primary" routerLink="/shop" (click)="close()">Start Shopping</button>
+  </div>
+
+  <!-- Cart Items -->
+  <div class="drawer-items" *ngIf="items.length > 0">
+    <div class="cart-item" *ngFor="let item of items">
+      <div class="item-img-wrapper">
+        <img [src]="item.product.images[0]" [alt]="item.product.name" />
+      </div>
+      <div class="item-info">
+        <span class="item-brand">{{ item.product.brand }}</span>
+        <h3 class="item-name">{{ item.product.name }}</h3>
+        <span class="item-meta">{{ item.size }} · {{ item.product.condition }}</span>
+        <span class="price">PKR {{ item.product.price | number }}</span>
+      </div>
+      <div class="item-controls">
+        <div class="qty-controls">
+          <button class="qty-btn" (click)="decrementQty(item)">−</button>
+          <span class="qty-value">{{ item.quantity }}</span>
+          <button class="qty-btn" (click)="incrementQty(item)">+</button>
+        </div>
+        <button class="remove-btn" (click)="removeItem(item)">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="drawer-footer" *ngIf="items.length > 0">
+    <div class="subtotal-row">
+      <span>Subtotal</span>
+      <span class="price">PKR {{ subtotal | number }}</span>
+    </div>
+    <a routerLink="/checkout" class="btn-primary btn-full checkout-btn" (click)="close()">
+      Proceed to Checkout
+    </a>
+    <button class="continue-link" (click)="close()">Continue Shopping</button>
+  </div>
+</div>

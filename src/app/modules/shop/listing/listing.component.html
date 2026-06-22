@@ -1,0 +1,113 @@
+<div class="listing-page">
+  <div class="container">
+    <!-- Page Header -->
+    <div class="page-header">
+      <nav class="breadcrumb">
+        <a routerLink="/">Home</a>
+        <span> › </span>
+        <span>{{ pageTitle }}</span>
+      </nav>
+      <h1 class="page-title">{{ pageTitle }}</h1>
+      <p class="result-count">Showing {{ filteredProducts.length }} products</p>
+    </div>
+
+    <!-- Active Filters Chips -->
+    <div class="active-filters" *ngIf="hasActiveFilters()">
+      <span *ngFor="let brand of selectedBrands" class="filter-chip">
+        {{ brand }} <button (click)="toggleBrand(brand)">×</button>
+      </span>
+      <span *ngFor="let cond of selectedConditions" class="filter-chip">
+        {{ cond }} <button (click)="toggleCondition(cond)">×</button>
+      </span>
+      <span *ngFor="let size of selectedSizes" class="filter-chip">
+        {{ size }} <button (click)="toggleSize(size)">×</button>
+      </span>
+      <button class="clear-all-btn" (click)="clearFilters()">Clear All</button>
+    </div>
+
+    <div class="listing-layout">
+      <!-- Sidebar Filters -->
+      <aside class="sidebar" [class.open]="showFilters">
+        <!-- CONDITION -->
+        <div class="filter-section">
+          <h4 class="filter-label">Condition</h4>
+          <label *ngFor="let cond of conditions" class="filter-check">
+            <input type="checkbox" [checked]="selectedConditions.includes(cond)" (change)="toggleCondition(cond)" />
+            {{ cond }}
+          </label>
+        </div>
+
+        <!-- BRAND -->
+        <div class="filter-section">
+          <h4 class="filter-label">Brand</h4>
+          <label *ngFor="let brand of brands" class="filter-check">
+            <input type="checkbox" [checked]="selectedBrands.includes(brand)" (change)="toggleBrand(brand)" />
+            {{ brand }} <span class="count">({{ getBrandCount(brand) }})</span>
+          </label>
+        </div>
+
+        <!-- PRICE -->
+        <div class="filter-section">
+          <h4 class="filter-label">Price Range</h4>
+          <div class="price-range">
+            <span>PKR {{ priceMin | number }}</span>
+            <span>PKR {{ priceMax | number }}</span>
+          </div>
+          <input type="range" [(ngModel)]="priceMin" (ngModelChange)="applyFilters()" min="0" max="50000" step="500" class="range-slider" />
+          <input type="range" [(ngModel)]="priceMax" (ngModelChange)="applyFilters()" min="0" max="50000" step="500" class="range-slider" />
+        </div>
+
+        <!-- SIZE -->
+        <div class="filter-section">
+          <h4 class="filter-label">Size (UK)</h4>
+          <div class="size-chips-filter">
+            <button *ngFor="let size of sizes" class="size-chip-filter"
+              [class.active]="selectedSizes.includes(size)"
+              (click)="toggleSize(size)">
+              {{ size.replace('UK ', '') }}
+            </button>
+          </div>
+        </div>
+
+        <button class="clear-filters-btn" (click)="clearFilters()">Clear Filters</button>
+      </aside>
+
+      <!-- Products Area -->
+      <div class="products-area">
+        <!-- Top Bar -->
+        <div class="top-bar">
+          <!-- Mobile Filter Toggle -->
+          <button class="filter-toggle-btn" (click)="showFilters = !showFilters">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+            Filters {{ hasActiveFilters() ? '(' + (selectedBrands.length + selectedConditions.length + selectedSizes.length) + ')' : '' }}
+          </button>
+          <!-- Sort -->
+          <div class="sort-wrapper">
+            <label>Sort:</label>
+            <select [(ngModel)]="sortOption" (ngModelChange)="applyFilters()" class="sort-select">
+              <option value="newest">Newest First</option>
+              <option value="price-asc">Price: Low to High</option>
+              <option value="price-desc">Price: High to Low</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Grid -->
+        <div class="product-grid" *ngIf="filteredProducts.length > 0">
+          <app-product-card *ngFor="let product of filteredProducts" [product]="product"></app-product-card>
+        </div>
+
+        <!-- Empty state -->
+        <div class="no-results" *ngIf="filteredProducts.length === 0">
+          <div class="empty-icon">👟</div>
+          <h3>No products found</h3>
+          <p>Try adjusting your filters</p>
+          <button class="btn-primary" (click)="clearFilters()">Clear Filters</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Mobile Filter Overlay -->
+<div class="filter-overlay" *ngIf="showFilters" (click)="showFilters = false"></div>

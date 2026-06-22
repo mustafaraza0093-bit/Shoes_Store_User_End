@@ -1,0 +1,102 @@
+<div class="checkout-page">
+  <div class="container">
+
+    <!-- Step 3: Confirmation -->
+    <div class="confirmation" *ngIf="step === 3">
+      <div class="confirm-icon">✓</div>
+      <h1 class="confirm-title">Order Placed!</h1>
+      <p class="confirm-sub">Thank you, Hamza. Your order is confirmed.</p>
+      <div class="order-number">{{ orderNumber }}</div>
+      <p class="confirm-email">We'll send a confirmation to <strong>hamza&#64;gmail.com</strong></p>
+      <p class="confirm-date">Estimated Delivery: <strong>24–26 Jun 2026</strong></p>
+      <div class="confirm-actions">
+        <a routerLink="/account" class="btn-outline-dark confirm-btn">Track My Order</a>
+        <a routerLink="/shop" class="btn-primary confirm-btn">Continue Shopping</a>
+      </div>
+    </div>
+
+    <!-- Steps 1 & 2 -->
+    <ng-container *ngIf="step !== 3">
+      <!-- Progress Bar -->
+      <div class="progress-bar">
+        <div class="step" [class.active]="step >= 1" [class.done]="step > 1">
+          <div class="step-dot">{{ step > 1 ? '✓' : '1' }}</div>
+          <span>Delivery</span>
+        </div>
+        <div class="progress-line" [class.filled]="step >= 2"></div>
+        <div class="step" [class.active]="step >= 2" [class.done]="step > 2">
+          <div class="step-dot">{{ step > 2 ? '✓' : '2' }}</div>
+          <span>Review</span>
+        </div>
+        <div class="progress-line" [class.filled]="step >= 3"></div>
+        <div class="step" [class.active]="step >= 3">
+          <div class="step-dot">3</div>
+          <span>Confirm</span>
+        </div>
+      </div>
+
+      <div class="checkout-layout">
+        <!-- Main -->
+        <div class="checkout-main">
+
+          <!-- Step 1: Delivery -->
+          <div *ngIf="step === 1">
+            <h2 class="section-heading">DELIVERY ADDRESS</h2>
+            <div class="address-cards">
+              <div *ngFor="let addr of addresses"
+                class="address-card" [class.selected]="selectedAddress === addr.id"
+                (click)="selectedAddress = addr.id">
+                <div class="addr-radio">
+                  <div class="radio-dot" [class.active]="selectedAddress === addr.id"></div>
+                  <span class="addr-label">{{ addr.label }}</span>
+                </div>
+                <p class="addr-text">{{ addr.street }}</p>
+                <p class="addr-text">{{ addr.province }}</p>
+                <p class="addr-text">{{ addr.phone }}</p>
+              </div>
+            </div>
+            <button class="add-address-btn">+ Add a new address</button>
+            <button class="btn-primary btn-full continue-btn" (click)="nextStep()">Continue to Review →</button>
+          </div>
+
+          <!-- Step 2: Review -->
+          <div *ngIf="step === 2">
+            <h2 class="section-heading">REVIEW YOUR ORDER</h2>
+            <div class="review-items">
+              <div class="review-item" *ngFor="let item of items">
+                <img [src]="item.product.images[0]" [alt]="item.product.name" />
+                <div class="review-item-info">
+                  <span class="review-item-name">{{ item.product.name }}</span>
+                  <span class="review-item-meta">{{ item.size }} · {{ item.product.condition }}</span>
+                </div>
+                <span class="price">PKR {{ item.product.price | number }}</span>
+              </div>
+            </div>
+            <div class="delivering-to">
+              <span>Delivering to: <strong>{{ getSelectedAddress()?.street }}</strong></span>
+              <button class="change-btn" (click)="step = 1">[Change]</button>
+            </div>
+            <div class="review-actions">
+              <button class="btn-outline-dark back-btn" (click)="prevStep()">← Back</button>
+              <button class="btn-primary place-btn" (click)="placeOrder()">Place Order →</button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Sidebar: Order Summary -->
+        <div class="checkout-sidebar">
+          <div class="summary-card">
+            <h3 class="summary-label">ORDER SUMMARY</h3>
+            <div class="summary-row"><span>Subtotal</span><span class="price">PKR {{ subtotal | number }}</span></div>
+            <div class="summary-row"><span>Shipping</span><span class="price">{{ shipping === 0 ? 'FREE' : 'PKR ' + (shipping | number) }}</span></div>
+            <div class="summary-row discount" *ngIf="discount > 0"><span>Discount</span><span class="price">−PKR {{ discount | number }}</span></div>
+            <div class="summary-divider"></div>
+            <div class="summary-row total"><span>Total</span><span class="price">PKR {{ grandTotal | number }}</span></div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+  </div>
+</div>

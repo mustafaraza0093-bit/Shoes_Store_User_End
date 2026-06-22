@@ -1,1 +1,122 @@
-<p>home works!</p>
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <div class="hero-overlay"></div>
+  <div class="hero-content container">
+    <h1 class="hero-headline">Every Step<br>Has a Story.</h1>
+    <p class="hero-sub">New arrivals &amp; premium pre-owned footwear.<br>Find your pair.</p>
+    <div class="hero-ctas">
+      <a routerLink="/shop" class="btn-primary hero-btn">Shop New Arrivals</a>
+      <a routerLink="/shop" [queryParams]="{condition: 'PRE-OWNED'}" class="btn-outline hero-btn">Browse Pre-Owned</a>
+    </div>
+  </div>
+  <div class="hero-scroll-hint">
+    <span>↓ scroll</span>
+  </div>
+</section>
+
+<!-- ===== CATEGORY STRIP ===== -->
+<section class="category-strip">
+  <div class="container">
+    <div class="category-grid">
+      <a *ngFor="let cat of categories" [routerLink]="cat.route" class="category-card">
+        <div class="cat-img-wrapper">
+          <img [src]="cat.image" [alt]="cat.label" />
+        </div>
+        <div class="cat-info">
+          <h2 class="cat-label">{{ cat.label }}</h2>
+          <p class="cat-count">{{ cat.count }} styles</p>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FLASH SALE ===== -->
+<section class="flash-sale">
+  <div class="container">
+    <div class="flash-header">
+      <div class="flash-title-group">
+        <span class="flash-bolt">⚡</span>
+        <h2 class="flash-title">Flash Sale</h2>
+        <span class="flash-subtitle">— Limited time offer</span>
+      </div>
+      <div class="countdown">
+        <span class="countdown-label">Ends In:</span>
+        <div class="countdown-digits">
+          <div class="digit-block">
+            <span class="digit">{{ pad(countdownHours) }}</span>
+            <span class="digit-label">HRS</span>
+          </div>
+          <span class="digit-separator">:</span>
+          <div class="digit-block">
+            <span class="digit">{{ pad(countdownMinutes) }}</span>
+            <span class="digit-label">MIN</span>
+          </div>
+          <span class="digit-separator">:</span>
+          <div class="digit-block">
+            <span class="digit">{{ pad(countdownSeconds) }}</span>
+            <span class="digit-label">SEC</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="product-grid four-col">
+      <app-product-card *ngFor="let product of flashSaleProducts" [product]="product"></app-product-card>
+    </div>
+    <div class="section-action">
+      <a routerLink="/shop" class="btn-outline-gold">View All Sale Items →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FEATURED PRODUCTS ===== -->
+<section class="featured-products">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title display">New Arrivals</h2>
+      <div class="section-divider"></div>
+    </div>
+    <div class="product-grid four-col">
+      <app-product-card *ngFor="let product of featuredProducts" [product]="product"></app-product-card>
+    </div>
+    <div class="section-action">
+      <a routerLink="/shop" class="btn-outline-dark">View All New Arrivals →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== BRAND SHOWCASE ===== -->
+<section class="brand-strip">
+  <div class="container">
+    <h3 class="brand-strip-title">Browse by Brand</h3>
+    <div class="brands-scroll">
+      <a *ngFor="let brand of brands" routerLink="/shop" [queryParams]="{brand: brand.toLowerCase()}" class="brand-chip">
+        {{ brand }}
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PRE-OWNED SECTION ===== -->
+<section class="pre-owned-section">
+  <div class="container">
+    <div class="pre-owned-content">
+      <h2 class="pre-owned-headline">Premium Pre-Owned.<br><span>Every pair verified.</span></h2>
+      <div class="trust-points">
+        <div class="trust-item">
+          <span class="trust-icon">✓</span> Authenticity verified
+        </div>
+        <div class="trust-item">
+          <span class="trust-icon">✓</span> Detailed condition report
+        </div>
+        <div class="trust-item">
+          <span class="trust-icon">✓</span> Cleaned &amp; inspected
+        </div>
+        <div class="trust-item">
+          <span class="trust-icon">✓</span> 7-day return policy
+        </div>
+      </div>
+      <a routerLink="/shop" [queryParams]="{condition: 'PRE-OWNED'}" class="btn-primary pre-owned-btn">Shop Pre-Owned</a>
+    </div>
+  </div>
+</section>

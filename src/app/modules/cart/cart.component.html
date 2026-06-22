@@ -1,0 +1,76 @@
+<div class="cart-page">
+  <div class="container">
+    <h1 class="page-title">Your Cart</h1>
+
+    <div class="cart-empty" *ngIf="items.length === 0">
+      <div class="empty-icon">🛒</div>
+      <h2>Your cart is empty</h2>
+      <p>Looks like you haven't added anything yet.</p>
+      <a routerLink="/shop" class="btn-primary">Start Shopping</a>
+    </div>
+
+    <div class="cart-layout" *ngIf="items.length > 0">
+      <!-- Cart Items -->
+      <div class="cart-items-col">
+        <div class="items-header">YOUR CART ({{ items.length }} items)</div>
+        <div class="cart-item" *ngFor="let item of items">
+          <img [src]="item.product.images[0]" [alt]="item.product.name" class="item-image" />
+          <div class="item-details">
+            <span class="item-brand">{{ item.product.brand }}</span>
+            <h3 class="item-name">{{ item.product.name }}</h3>
+            <span class="item-meta">{{ item.size }} · {{ item.product.condition }}</span>
+          </div>
+          <div class="item-right">
+            <div class="qty-controls">
+              <button class="qty-btn" (click)="decrementQty(item)">−</button>
+              <span class="qty-val">{{ item.quantity }}</span>
+              <button class="qty-btn" (click)="incrementQty(item)">+</button>
+            </div>
+            <span class="price">PKR {{ item.product.price | number }}</span>
+            <button class="remove-btn" (click)="removeItem(item)" title="Remove">
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Order Summary -->
+      <div class="summary-col">
+        <div class="summary-card">
+          <h3 class="summary-title">ORDER SUMMARY</h3>
+          <div class="summary-row">
+            <span>Subtotal</span>
+            <span class="price">PKR {{ subtotal | number }}</span>
+          </div>
+          <div class="summary-row">
+            <span>Shipping</span>
+            <span class="price">{{ shipping === 0 ? 'FREE' : 'PKR ' + (shipping | number) }}</span>
+          </div>
+          <div class="summary-row discount" *ngIf="discount > 0">
+            <span>Discount ({{ promoCode }})</span>
+            <span class="price">−PKR {{ discount | number }}</span>
+          </div>
+          <div class="summary-divider"></div>
+          <div class="summary-row total">
+            <span>Total</span>
+            <span class="price">PKR {{ grandTotal | number }}</span>
+          </div>
+
+          <!-- Coupon -->
+          <div class="coupon-section">
+            <label class="coupon-label">Coupon Code</label>
+            <div class="coupon-input-row">
+              <input type="text" placeholder="e.g. SUMMER15" [(ngModel)]="couponInput" (keyup.enter)="applyCoupon()" />
+              <button class="btn-primary coupon-btn" (click)="applyCoupon()">→</button>
+            </div>
+            <p class="coupon-msg" [class.success]="couponSuccess" [class.error]="!couponSuccess" *ngIf="couponMessage">
+              {{ couponMessage }}
+            </p>
+          </div>
+
+          <a routerLink="/checkout" class="btn-primary btn-full checkout-btn">Checkout →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

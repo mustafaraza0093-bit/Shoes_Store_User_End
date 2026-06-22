@@ -1,1 +1,120 @@
-<p>navbar works!</p>
+<nav class="navbar" [class.scrolled]="isScrolled">
+  <div class="nav-container">
+
+    <!-- Logo -->
+    <a routerLink="/" class="logo">
+      <span class="logo-icon">◈</span> Sole &amp; Story
+    </a>
+
+    <!-- Desktop Nav Links -->
+    <div class="nav-links desktop-only">
+      <a *ngFor="let link of navLinks" [routerLink]="link.route" class="nav-link" routerLinkActive="active">
+        {{ link.label }}
+      </a>
+      <!-- Brands Mega Menu Trigger -->
+      <div class="mega-trigger" (mouseenter)="isBrandsMenuOpen=true" (mouseleave)="isBrandsMenuOpen=false">
+        <span class="nav-link">Brands ▾</span>
+        <!-- Mega Dropdown -->
+        <div class="mega-dropdown" *ngIf="isBrandsMenuOpen">
+          <div class="mega-header">SHOP BY BRAND</div>
+          <div class="mega-grid">
+            <button *ngFor="let brand of brands" class="brand-pill" (click)="navigateToBrand(brand.id)">
+              <span class="brand-name">{{ brand.name }}</span>
+              <span class="brand-count">{{ brand.count }} products</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Actions -->
+    <div class="nav-actions">
+      <!-- Search -->
+      <button class="icon-btn" (click)="toggleSearch()" id="search-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </button>
+      <!-- Cart -->
+      <button class="icon-btn cart-btn" (click)="openCart()" id="cart-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+        <span class="cart-badge" *ngIf="cartCount > 0">{{ cartCount }}</span>
+      </button>
+      <!-- Account -->
+      <div class="account-wrapper desktop-only" (mouseenter)="isAccountMenuOpen=true" (mouseleave)="isAccountMenuOpen=false">
+        <button class="icon-btn" id="account-btn">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </button>
+        <div class="account-dropdown" *ngIf="isAccountMenuOpen">
+          <ng-container *ngIf="currentUser; else guestMenu">
+            <div class="account-user-info">
+              <span class="account-name">{{ currentUser.name }}</span>
+              <span class="account-email">{{ currentUser.email }}</span>
+            </div>
+            <div class="dropdown-divider"></div>
+            <a routerLink="/account" class="dropdown-item">My Orders</a>
+            <a routerLink="/account/profile" class="dropdown-item">My Profile</a>
+            <button class="dropdown-item logout" (click)="logout()">Logout</button>
+          </ng-container>
+          <ng-template #guestMenu>
+            <a routerLink="/auth/login" class="dropdown-item">Login</a>
+            <a routerLink="/auth/register" class="dropdown-item">Register</a>
+          </ng-template>
+        </div>
+      </div>
+      <!-- Mobile Hamburger -->
+      <button class="icon-btn mobile-only" (click)="toggleMobileMenu()" id="hamburger-btn">
+        <svg *ngIf="!isMobileMenuOpen" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        <svg *ngIf="isMobileMenuOpen" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Search Bar -->
+  <div class="search-bar" *ngIf="isSearchOpen">
+    <div class="search-inner container">
+      <input type="text" placeholder="Search for shoes, brands, or styles..." 
+             [value]="searchQuery"
+             (input)="onSearch($any($event.target).value)"
+             (keyup.escape)="toggleSearch()"
+             autofocus id="search-input" />
+      <button class="icon-btn search-close" (click)="toggleSearch()">×</button>
+    </div>
+    <!-- Search Results -->
+    <div class="search-results container" *ngIf="searchResults.length > 0">
+      <div class="results-section-label">PRODUCTS</div>
+      <div *ngFor="let product of searchResults" class="search-result-item" (click)="goToProduct(product.id)">
+        <img [src]="product.images[0]" alt="{{ product.name }}" />
+        <div class="result-info">
+          <span class="result-name">{{ product.name }}</span>
+          <span class="result-meta">{{ product.brand }} — PKR {{ product.price | number }}</span>
+        </div>
+      </div>
+      <div class="see-all-link">See all results for "{{ searchQuery }}" →</div>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile Drawer -->
+<div class="mobile-overlay" *ngIf="isMobileMenuOpen" (click)="toggleMobileMenu()"></div>
+<div class="mobile-drawer" [class.open]="isMobileMenuOpen">
+  <div class="mobile-drawer-header">
+    <span class="logo">◈ Sole &amp; Story</span>
+    <button class="icon-btn" (click)="toggleMobileMenu()">×</button>
+  </div>
+  <div class="mobile-links">
+    <a *ngFor="let link of navLinks" [routerLink]="link.route" class="mobile-link" (click)="navigateTo(link.route)">{{ link.label }}</a>
+    <!-- Brands Accordion -->
+    <div class="mobile-accordion">
+      <button class="mobile-link accordion-trigger" (click)="toggleBrandsMenu()">
+        Brands <span>{{ isBrandsMenuOpen ? '▲' : '▼' }}</span>
+      </button>
+      <div class="accordion-body" *ngIf="isBrandsMenuOpen">
+        <button *ngFor="let brand of brands" class="mobile-brand-link" (click)="navigateToBrand(brand.id)">
+          {{ brand.name }}
+        </button>
+      </div>
+    </div>
+    <div class="mobile-divider"></div>
+    <a routerLink="/auth/login" class="mobile-link" (click)="navigateTo('/auth/login')">Login</a>
+    <a routerLink="/auth/register" class="mobile-link" (click)="navigateTo('/auth/register')">Register</a>
+  </div>
+</div>
