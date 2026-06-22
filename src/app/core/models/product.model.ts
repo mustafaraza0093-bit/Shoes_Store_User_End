@@ -1,28 +1,27 @@
-export interface Product {
+export interface ProductImage {
+  id?: string;
+  url: string;
+  altText?: string;
+  isPrimary?: boolean;
+  sortOrder?: number;
+}
+
+export interface Category {
   id: string;
   name: string;
-  brand: string;
-  category: 'Male' | 'Female' | 'Boys' | 'Kids';
-  condition: 'NEW' | 'PRE-OWNED';
-  price: number;
-  originalPrice?: number; // For sale items
-  sizes: string[];
-  inStockSizes: string[];
-  images: string[];
+  slug: string;
+  productCount?: number;
+}
+
+export interface Brand {
+  id: string;
+  name: string;
+  slug?: string;
+  logoUrl?: string;
   description?: string;
-  conditionReport?: {
-    grade: string;
-    inspectedDate: string;
-    sole: number;
-    upper: number;
-    insole: number;
-    laces: number;
-    stitching: number;
-    notes: string;
-    originalBox: boolean;
-  };
-  reviews: Review[];
-  isFlashSale?: boolean;
+  isActive?: boolean;
+  productCount?: number;
+  createdAt?: string;
 }
 
 export interface Review {
@@ -33,9 +32,45 @@ export interface Review {
   text: string;
 }
 
-export interface Brand {
+export interface Product {
   id: string;
   name: string;
-  logoUrl?: string;
-  productCount: number;
+  slug?: string;
+  description?: string;
+  condition: string;
+  sku?: string;
+  sellingPrice: number;
+  originalPrice?: number; // Not in backend schema but needed for UI sale badge
+  shippingCost?: number;
+  isActive?: boolean;
+  isFeatured?: boolean;
+  brand: Brand | any;
+  category: Category | any;
+  images: ProductImage[];
+  totalStock?: number;
+
+  // Added for UI compatibility (Missing from API)
+  sizes: string[];
+  inStockSizes: string[];
+  reviews: Review[];
+  conditionReport?: {
+    grade: string;
+    score: string;
+    inspectedDate: string;
+    inspectorName: string;
+    metrics: {
+      sole: number;
+      upper: number;
+      insole: number;
+      laces: number;
+      stitching: number;
+    };
+    defects: string[];
+    photos: string[];
+    originalBox: boolean;
+    notes: string;
+    articleId: string;
+  };
+  isFlashSale?: boolean;
 }
+

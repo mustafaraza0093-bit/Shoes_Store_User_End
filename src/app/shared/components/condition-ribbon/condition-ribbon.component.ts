@@ -9,5 +9,5 @@ import { CommonModule } from '@angular/common';
   styleUrl: './condition-ribbon.component.scss'
 })
 export class ConditionRibbonComponent {
-  @Input() condition!: 'NEW' | 'PRE-OWNED';
+  @Input() condition!: string;
 }

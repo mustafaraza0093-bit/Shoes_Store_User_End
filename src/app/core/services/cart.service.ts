@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, catchError, map, of, tap } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 import { Product } from '../models/product.model';
+import { environment } from '../../../environments/environment';
 
 export interface CartItem {
   product: Product;
@@ -12,22 +14,20 @@ export interface CartItem {
   providedIn: 'root'
 })
 export class CartService {
+  private apiUrl = environment.apiUrl;
   private items = new BehaviorSubject<CartItem[]>([]);
   private isDrawerOpen = new BehaviorSubject<boolean>(false);
   private discount = new BehaviorSubject<number>(0);
   private promoCode = new BehaviorSubject<string | null>(null);
 
-  constructor() {
-    // We could pre-populate the cart here for the demo as requested.
-  }
+  constructor(private http: HttpClient) {}
 
   // Pre-populate cart after DataService is injected or manually from home/app
   prePopulate(products: Product[]) {
     if (this.items.value.length === 0 && products.length >= 3) {
       this.items.next([
-        { product: products.find(p => p.id === 'm1')!, size: 'UK 9', quantity: 1 },
-        { product: products.find(p => p.id === 'm2')!, size: 'UK 8', quantity: 1 },
-        { product: products.find(p => p.id === 'm4')!, size: 'UK 9', quantity: 1 }
+        { product: products.find(p => p.id === 'm1') || products[0], size: 'UK 9', quantity: 1 },
+        { product: products.find(p => p.id === 'm2') || products[1], size: 'UK 8', quantity: 1 }
       ]);
     }
   }
@@ -65,7 +65,7 @@ export class CartService {
   }
 
   getSubtotal(): number {
-    return this.items.value.reduce((total, item) => total + (item.product.price * item.quantity), 0);
+    return this.items.value.reduce((total, item) => total + (item.product.sellingPrice * item.quantity), 0);
   }
 
   getDiscount(): Observable<number> {
@@ -76,28 +76,27 @@ export class CartService {
     return this.promoCode.asObservable();
   }
 
-  applyCoupon(code: string): { success: boolean, message: string } {
-    if (code.toUpperCase() === 'SUMMER15') {
-      const sub = this.getSubtotal();
-      if (sub >= 2000) {
-        this.promoCode.next('SUMMER15');
-        this.discount.next(sub * 0.15);
-        return { success: true, message: 'SUMMER15 applied — 15% off!' };
-      } else {
-        return { success: false, message: 'Order must be above PKR 2000.' };
-      }
-    } else if (code.toUpperCase() === 'FREESHIP') {
-       this.promoCode.next('FREESHIP');
-       return { success: true, message: 'Free shipping applied!' };
-    }
-    return { success: false, message: 'This code is invalid or expired.' };
+  applyCoupon(code: string): Observable<{ success: boolean, message: string }> {
+    const orderValue = this.getSubtotal();
+    return this.http.post<any>(`${this.apiUrl}/promotions/validate`, { couponCode: code, orderValue }).pipe(
+      map(res => {
+        // Assuming backend returns some discount amount or valid status
+        this.promoCode.next(code);
+        this.discount.next(res.discountAmount || (orderValue * 0.15)); // Fallback to 15% if backend doesn't give amount
+        return { success: true, message: 'Coupon applied successfully!' };
+      }),
+      catchError(err => {
+        return of({ success: false, message: err.error?.message || 'Invalid or expired coupon.' });
+      })
+    );
   }
 
   private recalculateDiscount() {
-    if (this.promoCode.value === 'SUMMER15') {
-      const sub = this.getSubtotal();
-      this.discount.next(sub >= 2000 ? sub * 0.15 : 0);
-      if (sub < 2000) this.promoCode.next(null);
+    // If a promo code is applied, we could re-validate it here or just drop it. 
+    // Dropping for simplicity if cart changes.
+    if (this.promoCode.value) {
+      this.promoCode.next(null);
+      this.discount.next(0);
     }
   }
 
@@ -105,6 +104,25 @@ export class CartService {
     this.items.next([]);
     this.discount.next(0);
     this.promoCode.next(null);
+  }
+
+  placeOrder(addressId: string, notes?: string): Observable<any> {
+    const items = this.items.value.map(i => ({
+      articleId: i.product.id,
+      sizeId: i.size, // Size string used as sizeId temporarily
+      quantity: i.quantity
+    }));
+
+    const payload = {
+      addressId,
+      items,
+      couponCode: this.promoCode.value,
+      notes
+    };
+
+    return this.http.post<any>(`${this.apiUrl}/orders`, payload).pipe(
+      tap(() => this.clearCart())
+    );
   }
 
   // Drawer state

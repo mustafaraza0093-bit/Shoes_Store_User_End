@@ -47,9 +47,10 @@ export class CartComponent implements OnInit {
   removeItem(item: CartItem) { this.cartService.removeItem(item.product.id, item.size); }
 
   applyCoupon() {
-    const result = this.cartService.applyCoupon(this.couponInput);
-    this.couponMessage = result.message;
-    this.couponSuccess = result.success;
+    this.cartService.applyCoupon(this.couponInput).subscribe(result => {
+      this.couponMessage = result.message;
+      this.couponSuccess = result.success;
+    });
   }
 
   get grandTotal(): number {

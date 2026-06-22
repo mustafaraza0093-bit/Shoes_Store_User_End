@@ -50,16 +50,18 @@ export class CheckoutComponent implements OnInit {
 
   applyPromo() {
     if (!this.promoInput) return;
-    const res = this.cartService.applyCoupon(this.promoInput);
-    this.promoMessage = res.message;
-    this.promoError = !res.success;
-    if (res.success) {
-      this.promoInput = '';
-    }
+    this.cartService.applyCoupon(this.promoInput).subscribe(res => {
+      this.promoMessage = res.message;
+      this.promoError = !res.success;
+      if (res.success) {
+        this.promoInput = '';
+      }
+    });
   }
 
   placeOrder() {
-    this.step = 3;
-    this.cartService.clearCart();
+    this.cartService.placeOrder(this.selectedAddress, 'Checkout notes').subscribe(() => {
+      this.step = 3;
+    });
   }
 }

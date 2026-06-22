@@ -42,11 +42,11 @@
     <!-- Prices -->
     <div class="price-container">
       <ng-container *ngIf="product.originalPrice; else normalPrice">
-        <span class="price-sale">PKR {{ product.price | number }}</span>
+        <span class="price-sale">PKR {{ product.sellingPrice | number }}</span>
         <span class="price-strike">PKR {{ product.originalPrice | number }}</span>
       </ng-container>
       <ng-template #normalPrice>
-        <span class="price">PKR {{ product.price | number }}</span>
+        <span class="price">PKR {{ product.sellingPrice | number }}</span>
       </ng-template>
     </div>
 

@@ -43,11 +43,11 @@
         <!-- Price -->
         <div class="price-block">
           <ng-container *ngIf="product.originalPrice; else normalPrice">
-            <span class="price-sale">PKR {{ product.price | number }}</span>
+            <span class="price-sale">PKR {{ product.sellingPrice | number }}</span>
             <span class="price-strike">PKR {{ product.originalPrice | number }}</span>
           </ng-container>
           <ng-template #normalPrice>
-            <span class="price">PKR {{ product.price | number }}</span>
+            <span class="price">PKR {{ product.sellingPrice | number }}</span>
           </ng-template>
         </div>
 
@@ -138,22 +138,65 @@
 
       <!-- Condition Report Tab -->
       <div class="tab-content" *ngIf="activeTab === 'condition' && product.conditionReport">
-        <h3>Condition Report — {{ product.conditionReport.grade }}</h3>
-        <p class="inspected-date">Inspected: {{ product.conditionReport.inspectedDate }}</p>
+        <h3>Condition Report — {{ product.conditionReport.grade }} ({{ product.conditionReport.score }})</h3>
+        <p class="inspected-date">Inspected by {{ product.conditionReport.inspectorName }} on {{ product.conditionReport.inspectedDate | date }}</p>
+        
         <div class="condition-bars">
-          <div class="cond-row"><span class="cond-label">Sole</span><div class="cond-bar"><div class="cond-fill" [style.width]="getConditionBar(product.conditionReport.sole)"></div></div><span>{{ product.conditionReport.sole }}/10</span></div>
-          <div class="cond-row"><span class="cond-label">Upper</span><div class="cond-bar"><div class="cond-fill" [style.width]="getConditionBar(product.conditionReport.upper)"></div></div><span>{{ product.conditionReport.upper }}/10</span></div>
-          <div class="cond-row"><span class="cond-label">Insole</span><div class="cond-bar"><div class="cond-fill" [style.width]="getConditionBar(product.conditionReport.insole)"></div></div><span>{{ product.conditionReport.insole }}/10</span></div>
-          <div class="cond-row"><span class="cond-label">Laces</span><div class="cond-bar"><div class="cond-fill" [style.width]="getConditionBar(product.conditionReport.laces)"></div></div><span>{{ product.conditionReport.laces }}/10</span></div>
-          <div class="cond-row"><span class="cond-label">Stitching</span><div class="cond-bar"><div class="cond-fill" [style.width]="getConditionBar(product.conditionReport.stitching)"></div></div><span>{{ product.conditionReport.stitching }}/10</span></div>
+          <div class="cond-row"><span class="cond-label">Sole</span><div class="cond-bar"><div class="cond-fill" [style.width]="getConditionBar(product.conditionReport.metrics.sole)"></div></div><span>{{ product.conditionReport.metrics.sole }}/10</span></div>
+          <div class="cond-row"><span class="cond-label">Upper</span><div class="cond-bar"><div class="cond-fill" [style.width]="getConditionBar(product.conditionReport.metrics.upper)"></div></div><span>{{ product.conditionReport.metrics.upper }}/10</span></div>
+          <div class="cond-row"><span class="cond-label">Insole</span><div class="cond-bar"><div class="cond-fill" [style.width]="getConditionBar(product.conditionReport.metrics.insole)"></div></div><span>{{ product.conditionReport.metrics.insole }}/10</span></div>
+          <div class="cond-row"><span class="cond-label">Laces</span><div class="cond-bar"><div class="cond-fill" [style.width]="getConditionBar(product.conditionReport.metrics.laces)"></div></div><span>{{ product.conditionReport.metrics.laces }}/10</span></div>
+          <div class="cond-row"><span class="cond-label">Stitching</span><div class="cond-bar"><div class="cond-fill" [style.width]="getConditionBar(product.conditionReport.metrics.stitching)"></div></div><span>{{ product.conditionReport.metrics.stitching }}/10</span></div>
         </div>
-        <p class="cond-notes">Notes: {{ product.conditionReport.notes }}</p>
+
+        <div *ngIf="product.conditionReport.defects && product.conditionReport.defects.length > 0" style="margin-top: 1.5rem;">
+          <h4>Noted Defects:</h4>
+          <ul style="padding-left: 1.5rem; margin-top: 0.5rem;">
+            <li *ngFor="let defect of product.conditionReport.defects">{{ defect }}</li>
+          </ul>
+        </div>
+
+        <div *ngIf="product.conditionReport.photos && product.conditionReport.photos.length > 0" style="margin-top: 1.5rem;">
+          <h4>Defect Photos:</h4>
+          <div style="display: flex; gap: 1rem; margin-top: 0.5rem; overflow-x: auto;">
+            <img *ngFor="let photo of product.conditionReport.photos" [src]="photo" style="width: 150px; height: 150px; object-fit: cover; border-radius: 8px; border: 1px solid var(--border-color);" alt="Defect Photo">
+          </div>
+        </div>
+
+        <p class="cond-notes" style="margin-top: 1.5rem;">Notes: {{ product.conditionReport.notes }}</p>
         <p class="cond-notes">Original box: {{ product.conditionReport.originalBox ? 'Included ✓' : 'Not included' }}</p>
       </div>
 
       <!-- Reviews Tab -->
       <div class="tab-content" *ngIf="activeTab === 'reviews'">
         <h3>Customer Reviews</h3>
+        
+        <!-- Add Review Form -->
+        <div class="add-review-section" *ngIf="isLoggedIn" style="margin-bottom: 2rem; padding: 1.5rem; background: var(--bg-alt); border-radius: 8px;">
+          <h4 style="margin-bottom: 1rem;">Write a Review</h4>
+          <div class="form-group" style="margin-bottom: 1rem;">
+            <label style="display:block; margin-bottom: 0.5rem; font-size: 0.9rem; color: var(--text-muted);">Rating</label>
+            <select [(ngModel)]="newReviewRating" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 4px; background: transparent; color: var(--text-color);">
+              <option [ngValue]="5">5 - Excellent</option>
+              <option [ngValue]="4">4 - Good</option>
+              <option [ngValue]="3">3 - Average</option>
+              <option [ngValue]="2">2 - Poor</option>
+              <option [ngValue]="1">1 - Terrible</option>
+            </select>
+          </div>
+          <div class="form-group" style="margin-bottom: 1rem;">
+            <label style="display:block; margin-bottom: 0.5rem; font-size: 0.9rem; color: var(--text-muted);">Comment</label>
+            <textarea [(ngModel)]="newReviewText" rows="3" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 4px; background: transparent; color: var(--text-color);"></textarea>
+          </div>
+          <p *ngIf="reviewMessage" style="margin-bottom: 1rem; font-size: 0.9rem;" [style.color]="reviewMessage.includes('Failed') ? '#e74c3c' : '#27ae60'">{{ reviewMessage }}</p>
+          <button class="btn-primary" style="padding: 0.5rem 1.5rem; width: auto;" [disabled]="isSubmittingReview || !newReviewText" (click)="submitReview()">
+            {{ isSubmittingReview ? 'Submitting...' : 'Submit Review' }}
+          </button>
+        </div>
+        <div class="add-review-section" *ngIf="!isLoggedIn" style="margin-bottom: 2rem;">
+          <p><a routerLink="/login" style="color: var(--primary-color); text-decoration: underline;">Log in</a> to write a review.</p>
+        </div>
+
         <div class="reviews-list">
           <div class="review-card" *ngFor="let review of product.reviews">
             <div class="review-header">

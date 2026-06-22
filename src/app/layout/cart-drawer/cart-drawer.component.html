@@ -20,13 +20,13 @@
   <div class="drawer-items" *ngIf="items.length > 0">
     <div class="cart-item" *ngFor="let item of items">
       <div class="item-img-wrapper">
-        <img [src]="item.product.images[0]" [alt]="item.product.name" />
+        <img [src]="item.product.images[0]?.url" [alt]="item.product.name" />
       </div>
       <div class="item-info">
         <span class="item-brand">{{ item.product.brand }}</span>
         <h3 class="item-name">{{ item.product.name }}</h3>
         <span class="item-meta">{{ item.size }} · {{ item.product.condition }}</span>
-        <span class="price">PKR {{ item.product.price | number }}</span>
+        <span class="price">PKR {{ item.product.sellingPrice | number }}</span>
       </div>
       <div class="item-controls">
         <div class="qty-controls">

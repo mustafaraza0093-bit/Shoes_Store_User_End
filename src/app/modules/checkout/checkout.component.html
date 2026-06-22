@@ -64,12 +64,12 @@
             <h2 class="section-heading">REVIEW YOUR ORDER</h2>
             <div class="review-items">
               <div class="review-item" *ngFor="let item of items">
-                <img [src]="item.product.images[0]" [alt]="item.product.name" />
+                <div class="item-img"><img [src]="item.product.images[0]?.url" alt="img"></div>
                 <div class="review-item-info">
                   <span class="review-item-name">{{ item.product.name }}</span>
                   <span class="review-item-meta">{{ item.size }} · {{ item.product.condition }}</span>
                 </div>
-                <span class="price">PKR {{ item.product.price | number }}</span>
+                <span class="price">PKR {{ item.product.sellingPrice | number }}</span>
               </div>
             </div>
             <div class="delivering-to">

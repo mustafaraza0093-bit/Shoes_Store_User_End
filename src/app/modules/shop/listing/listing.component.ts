@@ -87,10 +87,11 @@ export class ListingComponent implements OnInit {
     if (this.selectedSizes.length > 0) {
       result = result.filter(p => p.inStockSizes.some(s => this.selectedSizes.includes(s)));
     }
-    result = result.filter(p => p.price >= this.priceMin && p.price <= this.priceMax);
-    
-    if (this.sortOption === 'price-asc') result.sort((a, b) => a.price - b.price);
-    else if (this.sortOption === 'price-desc') result.sort((a, b) => b.price - a.price);
+
+    result = result.filter(p => p.sellingPrice >= this.priceMin && p.sellingPrice <= this.priceMax);
+
+    if (this.sortOption === 'price-asc') result.sort((a, b) => a.sellingPrice - b.sellingPrice);
+    if (this.sortOption === 'price-desc') result.sort((a, b) => b.sellingPrice - a.sellingPrice);
     
     this.filteredProducts = result;
   }

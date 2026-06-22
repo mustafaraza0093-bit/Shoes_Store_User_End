@@ -83,10 +83,10 @@
       <div *ngIf="searchResults.length > 0">
         <div class="results-section-label">PRODUCTS</div>
         <div *ngFor="let product of searchResults" class="search-result-item" (click)="goToProduct(product.id)">
-          <img [src]="product.images[0]" alt="{{ product.name }}" />
+          <img [src]="product.images[0]?.url" alt="{{ product.name }}" class="search-product-img">
           <div class="result-info">
             <span class="result-name">{{ product.name }}</span>
-            <span class="result-meta">{{ product.brand }} — PKR {{ product.price | number }}</span>
+            <span class="product-meta">{{ product.brand }} — PKR {{ product.sellingPrice | number }}</span>
           </div>
         </div>
       </div>

@@ -14,7 +14,7 @@
       <div class="cart-items-col">
         <div class="items-header">YOUR CART ({{ items.length }} items)</div>
         <div class="cart-item" *ngFor="let item of items">
-          <img [src]="item.product.images[0]" [alt]="item.product.name" class="item-image" />
+          <img [src]="item.product.images[0]?.url" [alt]="item.product.name" class="item-image" />
           <div class="item-details">
             <span class="item-brand">{{ item.product.brand }}</span>
             <h3 class="item-name">{{ item.product.name }}</h3>
@@ -26,7 +26,7 @@
               <span class="qty-val">{{ item.quantity }}</span>
               <button class="qty-btn" (click)="incrementQty(item)">+</button>
             </div>
-            <span class="price">PKR {{ item.product.price | number }}</span>
+            <span class="price">PKR {{ item.product.sellingPrice | number }}</span>
             <button class="remove-btn" (click)="removeItem(item)" title="Remove">
               <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
             </button>

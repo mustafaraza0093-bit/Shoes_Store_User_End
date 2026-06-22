@@ -4,7 +4,7 @@
       <!-- Sidebar -->
       <aside class="account-sidebar">
         <div class="user-info" *ngIf="user">
-          <div class="user-avatar">{{ user.name.charAt(0) }}</div>
+          <div class="user-avatar">{{ user?.name?.charAt(0) || 'U' }}</div>
           <div class="user-details">
             <span class="user-name">{{ user.name }}</span>
             <span class="user-email">{{ user.email }}</span>
@@ -28,7 +28,7 @@
               <div class="order-main" (click)="toggleOrderDetails(order.id)">
                 <div class="order-id">{{ order.id }}</div>
                 <div class="order-date">{{ order.date }}</div>
-                <div class="order-items">{{ order.itemsCount }} item{{ order.itemsCount > 1 ? 's' : '' }}</div>
+                <div class="order-items-count">{{ order.itemsCount }} item{{ order.itemsCount && order.itemsCount > 1 ? 's' : '' }}</div>
                 <div class="order-total price">PKR {{ order.total | number }}</div>
                 <div class="order-status">{{ order.status }}</div>
                 <button class="view-details-btn">View Details {{ expandedOrder === order.id ? '▲' : '▼' }}</button>
@@ -51,6 +51,17 @@
             <div class="field-group"><label>Email</label><input type="email" [value]="user.email" /></div>
             <div class="field-group"><label>Phone</label><input type="text" value="0321-4567890" /></div>
             <button class="btn-primary save-btn">Save Changes</button>
+          </div>
+
+          <hr class="divider" style="margin: 2rem 0; border: none; border-top: 1px solid var(--border-color);" />
+          <h3 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 1.5rem; color: var(--text-color);">Change Password</h3>
+          <div class="profile-form">
+            <div class="field-group"><label>Current Password</label><input type="password" [(ngModel)]="currentPassword" /></div>
+            <div class="field-group"><label>New Password</label><input type="password" [(ngModel)]="newPassword" /></div>
+            <p *ngIf="passwordMessage" [style.color]="passwordError ? '#e74c3c' : '#27ae60'" style="margin-bottom: 1rem; font-size: 0.9rem;">{{ passwordMessage }}</p>
+            <button class="btn-primary save-btn" [disabled]="isUpdatingPassword || !currentPassword || !newPassword" (click)="updatePassword()">
+              {{ isUpdatingPassword ? 'Updating...' : 'Update Password' }}
+            </button>
           </div>
         </div>
 
