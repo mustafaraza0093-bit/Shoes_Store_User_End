@@ -5,9 +5,15 @@ import { RouterOutlet } from '@angular/router';
   selector: 'app-root',
   standalone: true,
   imports: [RouterOutlet],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+  template: `<router-outlet></router-outlet>`,
+  styles: [`
+    :host {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+  `]
 })
 export class AppComponent {
-  title = 'temp-app';
+  title = 'Sole & Story';
 }
