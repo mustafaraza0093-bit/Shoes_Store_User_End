@@ -1,1 +1,104 @@
-/* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap');
+
+:root {
+  /* Color Palette */
+  --ink: #1A1A2E;
+  --canvas: #F8F6F1;
+  --accent: #C9A84C;
+  --accent-deep: #8B6914;
+  --surface: #FFFFFF;
+  --muted: #6B7280;
+  --danger: #DC2626;
+  --success: #16A34A;
+
+  /* Typography */
+  --font-display: 'Cormorant Garamond', serif;
+  --font-body: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  /* Layout */
+  --base-unit: 8px;
+  --container-max-width: 1280px;
+
+  /* Shadows */
+  --shadow-rest: 0 2px 8px rgba(26,26,46,0.08);
+  --shadow-hover: 0 8px 24px rgba(26,26,46,0.16);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--canvas);
+  color: var(--ink);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin-bottom: calc(var(--base-unit) * 2);
+}
+
+h1 { font-family: var(--font-display); font-size: 40px; font-weight: 600; }
+h2 { font-size: 28px; font-family: var(--font-body); font-weight: 600; }
+h3 { font-size: 20px; font-family: var(--font-body); font-weight: 600; }
+
+p {
+  font-size: 16px;
+  line-height: 1.6;
+  margin-bottom: calc(var(--base-unit) * 2);
+}
+
+.display-title {
+  font-family: var(--font-display);
+  font-size: 56px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.price {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.data-sku {
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+.label-small {
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+}
+
+/* Button */
+button {
+  font-family: var(--font-body);
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s ease-out;
+  outline: none;
+}
+button:focus-visible {
+  box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px var(--accent);
+}
+
+/* Utility layout classes */
+.container {
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+  padding: 0 48px;
+}
+
+@media (max-width: 640px) {
+  .container {
+    padding: 0 16px;
+  }
+}
