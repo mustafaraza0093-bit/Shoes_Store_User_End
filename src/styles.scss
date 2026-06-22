@@ -1,28 +1,33 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap');
 
 :root {
   /* Color Palette */
   --ink: #1A1A2E;
   --canvas: #F8F6F1;
-  --accent: #C9A84C;
-  --accent-deep: #8B6914;
   --surface: #FFFFFF;
+  --accent: #C9A84C;
+  --accent-hover: #8B6914;
   --muted: #6B7280;
   --danger: #DC2626;
   --success: #16A34A;
+  --border: #E5E2DA;
+  
+  --charcoal: #374151; /* for pre-owned ribbon */
 
   /* Typography */
-  --font-display: 'Cormorant Garamond', serif;
+  --font-hero: 'Cormorant Garamond', serif;
   --font-body: 'Inter', sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
+  --font-data: 'JetBrains Mono', monospace;
 
-  /* Layout */
-  --base-unit: 8px;
-  --container-max-width: 1280px;
+  /* Spacing */
+  --base: 8px;
+  
+  /* Container */
+  --max-width: 1280px;
 
   /* Shadows */
-  --shadow-rest: 0 2px 8px rgba(26,26,46,0.08);
-  --shadow-hover: 0 8px 24px rgba(26,26,46,0.16);
+  --shadow-rest: 0 2px 12px rgba(26,26,46,0.07);
+  --shadow-hover: 0 8px 28px rgba(26,26,46,0.14);
 }
 
 * {
@@ -35,70 +40,193 @@ body {
   background-color: var(--canvas);
   color: var(--ink);
   font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  font-weight: 400;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-h1, h2, h3, h4, h5, h6 {
-  margin-bottom: calc(var(--base-unit) * 2);
-}
-
-h1 { font-family: var(--font-display); font-size: 40px; font-weight: 600; }
-h2 { font-size: 28px; font-family: var(--font-body); font-weight: 600; }
-h3 { font-size: 20px; font-family: var(--font-body); font-weight: 600; }
-
-p {
-  font-size: 16px;
-  line-height: 1.6;
-  margin-bottom: calc(var(--base-unit) * 2);
-}
-
-.display-title {
-  font-family: var(--font-display);
-  font-size: 56px;
+/* Typography Classes */
+.headline-hero {
+  font-family: var(--font-hero);
+  font-size: 64px;
   font-weight: 700;
-  letter-spacing: -0.5px;
+  color: var(--ink);
+  letter-spacing: -1px;
+}
+
+h1, .h1 {
+  font-family: var(--font-hero);
+  font-size: 44px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 24px;
+}
+
+h2, .h2 {
+  font-family: var(--font-body);
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 16px;
+}
+
+h3, .h3 {
+  font-family: var(--font-body);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.nav-link {
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
 }
 
 .price {
+  font-family: var(--font-data);
   font-size: 18px;
   font-weight: 700;
+  color: var(--ink);
 }
 
-.data-sku {
-  font-family: var(--font-mono);
-  font-size: 12px;
+.price-sale {
+  font-family: var(--font-data);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--danger);
 }
 
-.label-small {
-  font-size: 13px;
-  font-weight: 500;
-  letter-spacing: 0.4px;
+.price-strike {
+  font-family: var(--font-data);
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--muted);
+  text-decoration: line-through;
+}
+
+.size-label {
+  font-family: var(--font-data);
+  font-size: 11px;
+  font-weight: 600;
   text-transform: uppercase;
 }
 
-/* Button */
-button {
+.badge {
   font-family: var(--font-body);
-  border: none;
-  cursor: pointer;
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: white;
+  padding: 4px 8px;
   border-radius: 4px;
-  transition: all 0.2s ease-out;
-  outline: none;
-}
-button:focus-visible {
-  box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px var(--accent);
 }
 
-/* Utility layout classes */
+.breadcrumb {
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--muted);
+}
+
+/* Layout Utilities */
 .container {
-  max-width: var(--container-max-width);
+  max-width: var(--max-width);
   margin: 0 auto;
   padding: 0 48px;
 }
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
   .container {
     padding: 0 16px;
   }
+  .headline-hero {
+    font-size: 48px;
+  }
+}
+
+/* Base Buttons */
+button {
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  padding: 12px 24px;
+  transition: all 0.2s ease-out;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-primary {
+  background-color: var(--accent);
+  color: white;
+}
+.btn-primary:hover {
+  background-color: var(--accent-hover);
+}
+.btn-primary:disabled {
+  background-color: var(--muted);
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.btn-outline {
+  background-color: transparent;
+  color: white;
+  border: 1px solid white;
+}
+.btn-outline:hover {
+  background-color: rgba(255,255,255,0.1);
+}
+
+.btn-outline-dark {
+  background-color: transparent;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+}
+.btn-outline-dark:hover {
+  background-color: rgba(201, 168, 76, 0.1);
+}
+
+.btn-full {
+  width: 100%;
+}
+
+/* Forms */
+input[type="text"], input[type="email"], input[type="password"] {
+  font-family: var(--font-body);
+  font-size: 16px;
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  width: 100%;
+  background: var(--surface);
+  outline: none;
+  transition: border-color 0.2s;
+}
+input:focus {
+  border-color: var(--accent);
+}
+
+/* Page Transitions (implemented via Angular animations usually, but base CSS here) */
+.page-enter {
+  animation: pageFadeIn 0.18s ease-out forwards;
+}
+
+@keyframes pageFadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+ul {
+  list-style: none;
 }

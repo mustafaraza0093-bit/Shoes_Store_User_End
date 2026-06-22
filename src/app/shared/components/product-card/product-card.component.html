@@ -1,1 +1,61 @@
-<p>product-card works!</p>
+<div class="product-card" (click)="navigateToDetails()">
+  <!-- Image Wrapper -->
+  <div class="image-wrapper">
+    <app-condition-ribbon [condition]="product.condition"></app-condition-ribbon>
+    
+    <!-- Sale Badge -->
+    <div class="sale-badge" *ngIf="product.originalPrice">SALE</div>
+
+    <!-- Wishlist Button -->
+    <button class="wishlist-btn" (click)="toggleWishlist($event)" [class.active]="isWishlisted">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+      </svg>
+    </button>
+
+    <!-- Images for Hover Crossfade -->
+    <div class="images-container">
+      <img [src]="product.images[0]" alt="{{ product.name }}" class="product-img primary">
+      <img *ngIf="product.images[1]" [src]="product.images[1]" alt="{{ product.name }}" class="product-img secondary">
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="card-content">
+    <span class="product-brand">{{ product.brand }}</span>
+    <h3 class="product-name">{{ product.name }}</h3>
+
+    <!-- Size Chips -->
+    <div class="size-chips">
+      <button 
+        *ngFor="let size of product.sizes" 
+        [class.active]="selectedSize === size"
+        [class.out-of-stock]="!isSizeInStock(size)"
+        (click)="selectSize(size, $event)"
+        [disabled]="!isSizeInStock(size)"
+        class="size-chip"
+        [title]="!isSizeInStock(size) ? 'Out of stock in ' + size : ''">
+        {{ size }}
+      </button>
+    </div>
+
+    <!-- Prices -->
+    <div class="price-container">
+      <ng-container *ngIf="product.originalPrice; else normalPrice">
+        <span class="price-sale">PKR {{ product.price | number }}</span>
+        <span class="price-strike">PKR {{ product.originalPrice | number }}</span>
+      </ng-container>
+      <ng-template #normalPrice>
+        <span class="price">PKR {{ product.price | number }}</span>
+      </ng-template>
+    </div>
+
+    <!-- Add to Cart Button -->
+    <button 
+      class="btn-primary btn-full add-to-cart-btn" 
+      [disabled]="!selectedSize || isAdding"
+      (click)="addToCart($event)">
+      <span class="btn-text">{{ btnText }}</span>
+    </button>
+  </div>
+</div>
